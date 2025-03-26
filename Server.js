@@ -1,12 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve frontend files
 
+// Serve static files (including index.html)
+app.use(express.static('public'));
+
+// Serve index.html when accessing root URL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Fake recharge endpoint
 app.post('/recharge', (req, res) => {
     const { username, coinAmount } = req.body;
 
@@ -19,6 +28,7 @@ app.post('/recharge', (req, res) => {
     });
 });
 
+// Start server
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
